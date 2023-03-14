@@ -5,7 +5,26 @@ import { useState } from "react"
 
 export default function Home({data}){
   const [dat,setdat]= useState('');
-  const [occ,setocc]= useState('')
+  const [occ,setocc]= useState('');
+  const [db,setdb]= useState({})
+  const handledelete= async()=>{
+    const response= await fetch('api/delete',{
+      method:'DELETE',
+      body:JSON.stringify({dat,occ}),
+      headers:{
+        'Content-Type':'application/json',
+    },
+    })
+    const out= response.json();
+    console.log(out)
+  }
+  const handleread= async()=>{
+    const response = await fetch('api/read')
+    console.log("out of req")
+    const readata= await response.json();
+    setdb(readata)
+    console.log(readata)
+  }
   const handlesubmit= async()=>{
     const response= await fetch('api/addd'
     ,{
@@ -17,6 +36,7 @@ export default function Home({data}){
     }
     )
     const abc= await response.json();
+    // setdb(abc)
     console.log(abc);
     
     
@@ -31,11 +51,13 @@ export default function Home({data}){
 
 
       <button onClick={handlesubmit}>Submit</button>
+      <button onClick={handleread}>read</button>
+      <button onClick={handledelete}>Delete</button>
       {
-        data && data.map((datas)=>{
+        db && data.map((datas)=>{
           return(
-            <div key={datas.name}>
-              <p>{datas.name}||{datas.occupation}</p>
+            <div key={datas.dat}>
+              <p>{datas.dat}||{datas.occ}</p>
             </div>
           )
         })
